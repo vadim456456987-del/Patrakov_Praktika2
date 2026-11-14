@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — Patrakov • CSV Import</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar navbar-expand-sm container">
+            <a class="navbar-brand brand-mark" asp-controller="Products" asp-action="Import"><span class="brand-symbol">P</span><span>Patrakov<span class="brand-muted"> / CSV Import</span></span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation" aria-controls="mainNavigation" aria-expanded="false" aria-label="Открыть меню"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse justify-content-end" id="mainNavigation">
+                <ul class="navbar-nav gap-sm-2">
+                    <li class="nav-item"><a class="nav-link" asp-controller="Products" asp-action="Import">Импорт</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Products" asp-action="Index">Каталог</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main class="container app-main">@RenderBody()</main>
+    <footer class="site-footer"><div class="container">Учебный проект • ASP.NET Core MVC • Хранение данных в памяти</div></footer>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

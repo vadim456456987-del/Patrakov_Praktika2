@@ -1,0 +1,57 @@
+@model ProductsIndexViewModel
+@{
+    ViewData["Title"] = "Каталог товаров";
+}
+
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">ЭЛЕКТРОННЫЙ МАГАЗИН • КАТАЛОГ</p>
+        <h1>Товары</h1>
+        <p class="text-secondary">Импортированные записи хранятся в памяти приложения.</p>
+    </div>
+    <a class="btn btn-primary" asp-controller="Products" asp-action="Import">Импортировать CSV <span aria-hidden="true">→</span></a>
+</section>
+
+<div class="metrics-grid catalog-metrics">
+    <div class="metric-card"><span>Товаров в каталоге</span><strong>@Model.TotalCount</strong></div>
+    <div class="metric-card metric-success"><span>Сумма цен</span><strong>@Model.TotalValue.ToString("N0") ₽</strong></div>
+</div>
+
+@if (Model.Products.Count == 0)
+{
+    <div class="panel empty-state">
+        <div class="empty-icon">＋</div>
+        <h2>Каталог пока пуст</h2>
+        <p>Загрузите подготовленный CSV-файл, чтобы добавить первые товары.</p>
+        <a class="btn btn-primary" asp-controller="Products" asp-action="Import">Перейти к импорту</a>
+    </div>
+}
+else
+{
+    <div class="panel table-panel">
+        <div class="table-wrap">
+            <table class="table data-table">
+                <thead>
+                    <tr><th>Артикул</th><th>Название</th><th>Описание</th><th>Цена</th><th>Категория</th><th>Остаток</th><th>Активен</th><th>Бренд</th><th>Гарантия</th><th>Модель</th></tr>
+                </thead>
+                <tbody>
+                @foreach (var product in Model.Products)
+                {
+                    <tr>
+                        <td class="sku-cell">@product.Sku</td>
+                        <td class="product-name">@product.Name</td>
+                        <td>@(string.IsNullOrWhiteSpace(product.Description) ? "—" : product.Description)</td>
+                        <td class="price-cell">@product.Price.ToString("N2") @product.Currency</td>
+                        <td>@product.CategoryName</td>
+                        <td>@product.StockQuantity</td>
+                        <td><span class="@(product.IsActive ? "active-label" : "inactive-label")">@(product.IsActive ? "Да" : "Нет")</span></td>
+                        <td>@product.Brand</td>
+                        <td>@product.WarrantyMonths мес.</td>
+                        <td>@(string.IsNullOrWhiteSpace(product.ModelNumber) ? "—" : product.ModelNumber)</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

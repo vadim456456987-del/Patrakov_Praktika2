@@ -1,0 +1,75 @@
+@model ImportViewModel
+@{
+    ViewData["Title"] = "Импорт товаров";
+}
+
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">КАТАЛОГ • CSV</p>
+        <h1>Импорт товаров</h1>
+        <p class="text-secondary">Загрузите CSV и проверьте товары до добавления в каталог.</p>
+    </div>
+    <a class="btn btn-outline-dark" asp-controller="Products" asp-action="Index">Открыть каталог <span aria-hidden="true">→</span></a>
+</section>
+
+<div class="panel import-panel">
+    <form asp-controller="Products" asp-action="Import" method="post" enctype="multipart/form-data" class="import-form">
+        @Html.AntiForgeryToken()
+        <div class="form-block">
+            <label for="filePath" class="form-label">Путь к CSV-файлу</label>
+            <input id="filePath" name="filePath" value="@Model.FilePath" class="form-control" placeholder="/csv/sample_products.csv" />
+            <div class="form-text">Можно указать /csv/sample_products.csv или полный локальный путь.</div>
+        </div>
+        <div class="form-divider"><span>или загрузите файл</span></div>
+        <div class="form-block">
+            <label for="csvFile" class="form-label">CSV-файл с устройства</label>
+            <input id="csvFile" name="csvFile" type="file" accept=".csv,text/csv" class="form-control" />
+            <div class="form-text">Кодировка UTF-8; обязательны столбцы варианта «Электроника».</div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg">Импортировать товары</button>
+    </form>
+</div>
+
+<div class="hint-grid">
+    <div class="hint-card"><strong>Проверка</strong><span>SKU, название, цена, остаток и активность</span></div>
+    <div class="hint-card"><strong>Вариант 1</strong><span>Бренд обязателен, гарантия — от 0 до 60 месяцев</span></div>
+    <div class="hint-card"><strong>Хранение</strong><span>Товары остаются в памяти до перезапуска приложения</span></div>
+</div>
+
+@if (Model.Result is not null)
+{
+    <section class="results-section" aria-live="polite">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">ОТЧЕТ О ЗАГРУЗКЕ</p>
+                <h2>Результат импорта</h2>
+            </div>
+            <span class="status-pill @(Model.Result.ErrorCount == 0 ? "status-ok" : "status-warning")">
+                @(Model.Result.ErrorCount == 0 ? "Импорт завершен" : "Есть замечания")
+            </span>
+        </div>
+        <div class="metrics-grid">
+            <div class="metric-card"><span>Всего строк</span><strong>@Model.Result.TotalRows</strong></div>
+            <div class="metric-card metric-success"><span>Импортировано</span><strong>@Model.Result.ImportedCount</strong></div>
+            <div class="metric-card @(Model.Result.ErrorCount > 0 ? "metric-danger" : "")"><span>Ошибок</span><strong>@Model.Result.ErrorCount</strong></div>
+        </div>
+        @if (Model.Result.Errors.Count > 0)
+        {
+            <div class="table-wrap">
+                <table class="table data-table">
+                    <thead><tr><th>Строка</th><th>Описание ошибки</th></tr></thead>
+                    <tbody>
+                    @foreach (var error in Model.Result.Errors)
+                    {
+                        <tr><td>@(error.RowNumber == 0 ? "—" : error.RowNumber)</td><td>@error.Message</td></tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p class="success-note">Все строки прошли проверку. <a asp-controller="Products" asp-action="Index">Перейти к товарам</a></p>
+        }
+    </section>
+}
